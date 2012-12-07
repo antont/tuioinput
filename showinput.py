@@ -4,9 +4,9 @@ from pyglet.gl import *
 import tuio_rcv
 
 window = pyglet.window.Window(visible=True, resizable=True)
+already_handled_fingerids = set()
 
 def square(c1):
-    glColor4f(0.9, 0.2, 0.1, 1.0)
     x1, y1 = c1
     x2, y2 = x1 + 10, y1 + 10
     #print x1, y1, x2, y2
@@ -22,9 +22,18 @@ def normalize(x, y):
 def on_draw():
     glColor4f(1.0, 1.0, 1.0, 1.0)
     background.blit_tiled(0, 0, 0, window.width, window.height)
-    for x,y in tuio_rcv.clicks.itervalues():
-        y = 1 - y
-        square(normalize(x, y))
+    for num, coord in tuio_rcv.clicks.iteritems():
+        if num not in already_handled_fingerids:
+            already_handled_fingerids.add(num)
+            glColor4f(0.9, 0.2, 0.1, 1.0)
+            x, y = coord
+            y = 1 - y
+            square(normalize(x, y))
+        #tried using a diff color for later events, but that made the initial hard to see
+        #else:
+        #    glColor4f(0.1, 0.2, 1.0, 1.0)
+    
+    #to clear the already handled things from the tuio reader side
     tuio_rcv.clicks.clear()
 
 if __name__ == '__main__':
