@@ -45,10 +45,10 @@ def tuio2Dcur_callback(path, tags, args, source):
     #print path,
     #print args
     _, num, x, y, a, b, c = args
-    print num, x, y
+    #print num, x, y
     if num not in clicks:
         clicks[num] = (x, y)
-        print clicks
+        #print clicks
     #print source
 
 def default_handler(addr, tags, stuff, source):

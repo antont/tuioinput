@@ -6,10 +6,10 @@ import tuio_rcv
 window = pyglet.window.Window(visible=True, resizable=True)
 
 def square(c1):
-    #glColor4f(0.23, 0.23, 0.23, 1.0)
+    glColor4f(0.9, 0.2, 0.1, 1.0)
     x1, y1 = c1
     x2, y2 = x1 + 10, y1 + 10
-    print x1, y1, x2, y2
+    #print x1, y1, x2, y2
     pyglet.graphics.draw(4, GL_QUADS, ('v2f', (x1, y1, x1, y2, x2, y2, x2, y1)))
 
 def readinput(dt):
@@ -20,6 +20,7 @@ def normalize(x, y):
 
 @window.event
 def on_draw():
+    glColor4f(1.0, 1.0, 1.0, 1.0)
     background.blit_tiled(0, 0, 0, window.width, window.height)
     for x,y in tuio_rcv.clicks.itervalues():
         y = 1 - y
