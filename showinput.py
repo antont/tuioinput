@@ -26,12 +26,13 @@ def on_draw():
         if num not in already_handled_fingerids:
             already_handled_fingerids.add(num)
             glColor4f(0.9, 0.2, 0.1, 1.0)
-            x, y = coord
-            y = 1 - y
-            square(normalize(x, y))
         #tried using a diff color for later events, but that made the initial hard to see
-        #else:
-        #    glColor4f(0.1, 0.2, 1.0, 1.0)
+        else:
+            glColor4f(0.1, 0.2, 1.0, 0.5)
+
+	x, y = coord
+        y = 1 - y
+        square(normalize(x, y))
     
     #to clear the already handled things from the tuio reader side
     tuio_rcv.clicks.clear()
