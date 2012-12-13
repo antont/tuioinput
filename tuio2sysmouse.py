@@ -14,7 +14,7 @@ events = (
 device = uinput.Device(events)
 
 def normalise(x, y):
-    return 1600 + (x * 1920), y * 1080
+    return (x * 1920), y * 1080
 
 def main():
     while 1:
