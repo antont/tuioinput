@@ -3,7 +3,7 @@ from OSC import OSCServer
 import sys
 from time import sleep
 
-server = OSCServer( ("10.20.219.225", 3333) )
+server = OSCServer( ("192.168.1.100", 3333) )
 server.timeout = 0
 run = True
 
@@ -47,7 +47,7 @@ def tuio2Dcur_callback(path, tags, args, source):
     _, num, x, y, a, b, c = args
     #print num, x, y
     if num not in clicks:
-        clicks[num] = (x, y)
+        clicks[num] = (source, x, y)
         #print clicks
     #print source
 
@@ -64,6 +64,8 @@ server.addMsgHandler( "/user/1", user_callback )
 server.addMsgHandler( "/user/2", user_callback )
 server.addMsgHandler( "/user/3", user_callback )
 server.addMsgHandler( "/user/4", user_callback )
+server.addMsgHandler( "/user/5", user_callback )
+server.addMsgHandler( "/user/6", user_callback )
 server.addMsgHandler( "/tuio/2Dcur", tuio2Dcur_callback )
 server.addMsgHandler("default", default_handler)
 	
