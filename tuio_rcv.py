@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
-from OSC import OSCServer
 import sys
+try:
+    from OSC import OSCServer
+except ImportError:
+    sys.path.append("/home/ubiuser/deploy/pyosc/")
+    from OSC import OSCServer
+
 from time import sleep
 
 server = OSCServer( ("0.0.0.0", 3333) )
