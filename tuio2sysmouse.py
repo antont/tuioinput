@@ -2,21 +2,7 @@ import time
 import uinput
 
 import tuio_rcv
-
-"""
-support for multiple displays ('powerwall')
-works also for external displays (had laptop+table in dev)
-"""
-W = 1920
-H = 1080
-displayoffsets = {
-    '192.168.1.102': (0, 0),
-    '192.168.1.101': (W, 0),
-    '192.168.1.103': (0, H),
-    '192.168.1.104': (W, H),
-    '192.168.1.105': (W*2, 0),
-    '192.168.1.106': (W*2, H)
-}
+import displayconf
 
 fingerids_handled_last_round = set()
 fingerid_lastseen = dict()
@@ -33,11 +19,12 @@ device = uinput.Device(events)
 def normalise(display, x, y):
     """multidisplay support: 
     offset based on the position of the display in the physical layout"""
-    if display in displayoffsets:
-        displayoff = displayoffsets[display]
+    if display in displayconf.displayoffsets:
+        displayoff = displayconf.displayoffsets[display]
     else:
-        print "WARNING in tui2sysmouse: unknown display?", display
-        displayoff = (0, 0)
+        #print "WARNING in tui2sysmouse: unknown display?", display
+        #displayoff = (0, 0)
+        return None, None #to disable a bugging display, also to not get confused by unknown not-properly added ones
 
     x = displayoff[0] + (1920 * x)
     y = displayoff[1] + (1080 * y)
@@ -55,13 +42,15 @@ def main():
         gotsome=False
         for fingerid, eventdata in tuio_rcv.clicks.iteritems():
             gotsome=True
-            fingerids_handled_this_round.add(fingerid)
 
             source, x, y = eventdata
             #print source
             display = source[0]
             x, y = normalise(display, x, y)
+            if x is None:
+                continue
             print source, int(x), int(y)
+            fingerids_handled_this_round.add(fingerid)
 
             #syn=False to emit an "atomic" (x, y) + BTN DOWN event.    
             device.emit(uinput.ABS_X, int(x), syn=False)

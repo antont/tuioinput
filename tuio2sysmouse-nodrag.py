@@ -2,21 +2,7 @@
 import uinput
 
 import tuio_rcv
-
-"""
-support for multiple displays ('powerwall')
-works also for external displays (had laptop+table in dev)
-"""
-W = 1920
-H = 1080
-displayoffsets = {
-    '192.168.1.102': (0, 0),
-    '192.168.1.101': (W, 0),
-    '192.168.1.103': (0, H),
-    '192.168.1.104': (W, H),
-    '192.168.1.105': (W*2, 0),
-    '192.168.1.106': (W*2, H)
-}
+import displayconf
 
 """uinput things: create a software mouse"""
 already_handled_fingerids = set()
@@ -32,11 +18,12 @@ device = uinput.Device(events)
 def normalise(display, x, y):
     """multidisplay support: 
     offset based on the position of the display in the physical layout"""
-    if display in displayoffsets:
-        displayoff = displayoffsets[display]
+    if display in displayconf.displayoffsets:
+        displayoff = displayconf.displayoffsets[display]
     else:
-        print "WARNING in tui2sysmouse: unknown display?", display
-        displayoff = (0, 0)
+        #print "WARNING in tui2sysmouse: unknown display?", display
+        #displayoff = (0, 0)
+        return None, None
 
     x = displayoff[0] + (1920 * x)
     y = displayoff[1] + (1080 * y)
@@ -55,6 +42,8 @@ def main():
                 #print source
                 display = source[0]
                 x, y = normalise(display, x, y)
+                if x is None:
+                    continue
                 print source, int(x), int(y)
 
                 #syn=False to emit an "atomic" (x, y) + BTN DOWN event.    
